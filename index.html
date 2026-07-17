@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>首爾夏季之旅 20260722-20260727</title>
+    
+    <!-- 📱 PWA 行動裝置 App 化設定 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="首爾之旅">
+    <link rel="apple-touch-icon" href="https://img.icons8.com/clouds/256/airplane-take-off.png">
+
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 16px;
+            background-color: #f4f6f9;
+            color: #2d3748;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 頂部標題 */
+        .app-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 800;
+            color: #1a202c;
+            margin: 10px 0 20px 0;
+            letter-spacing: 1px;
+        }
+
+        /* ==================== 1. 資訊卡片區 (Grid Layout) ==================== */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+            width: 100%;
+        }
+        .info-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+        }
+        .card-icon { font-size: 22px; }
+        .card-title { font-size: 16px; font-weight: bold; color: #1a202c; }
+        .card-body { font-size: 13.5px; line-height: 1.6; color: #4a5568; margin-bottom: 16px; }
+        
+        .flight-row {
+            background: #f7fafc;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid #3182ce;
+        }
+        .flight-tag { font-weight: bold; color: #2b6cb0; font-size: 12px; }
+        .highlight-text { color: #e53e3e; font-weight: bold; }
+        .step-list { padding-left: 16px; margin: 6px 0; }
+        .step-list li { margin-bottom: 4px; }
+
+        .card-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 13px;
+            text-decoration: none;
+            text-align: center;
+            transition: opacity 0.2s;
+        }
+        .card-btn:hover { opacity: 0.9; }
+        .btn-asiana { background-color: #2d3748; color: #ffffff; }
+        .btn-arrival { background-color: #319795; color: #ffffff; }
+        .btn-cityairport { background-color: #dd6b20; color: #ffffff; }
+
+        /* ==================== 2. 電腦版：橫向大綱表格 ==================== */
+        .desktop-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            min-width: 900px;
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 0;
+            text-align: center;
+            vertical-align: top;
+        }
+        .day-link {
+            display: block;
+            padding: 16px 10px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .day-link:hover {
+            filter: brightness(1.08);
+            transform: translateY(-2px);
+        }
+
+        /* 經典色系定義 */
+        .day-1 { background-color: #ff7675; color: #ffffff; }
+        .day-2 { background-color: #ffeaa7; color: #2d3748; }
+        .day-3 { background-color: #55efc4; color: #2d3748; }
+        .day-4 { background-color: #00cec9; color: #ffffff; }
+        .day-5 { background-color: #a29bfe; color: #ffffff; }
+        .day-6 { background-color: #ff7675; color: #ffffff; }
+
+        .day-title { font-weight: bold; font-size: 15px; }
+        .date-subtitle { font-size: 11px; margin-top: 4px; opacity: 0.9; }
+        .content-cell { background-color: #ffffff; text-align: left; padding: 12px 10px; font-size: 13px; }
+        .spot-item { margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px dashed #edf2f7; }
+        .spot-item:last-child { border-bottom: none; }
+        .time-tag { font-size: 10px; font-weight: bold; background: #edf2f7; padding: 2px 5px; border-radius: 4px; color: #4a5568; display: inline-block; margin-bottom: 2px; }
+        .spot-name { font-weight: 600; color: #1a202c; }
+
+        /* ==================== 3. 手機版專屬：橫向滾動 App 導覽列 ==================== */
+        .mobile-tab-bar {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 12px 0;
+            margin: -16px -16px 20px -16px;
+            border-bottom: 1px solid #e2e8f0;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+        .mobile-tab-bar::-webkit-scrollbar { display: none; }
+        .tab-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 0 5px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .tab-btn:first-child { margin-left: 16px; }
+        .tab-btn:last-child { margin-right: 16px; }
+
+        /* ==================== 4. 下方詳細行程：質感 App 卡片 ==================== */
+        .detail-section {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 16px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            scroll-margin-top: 65px;
+        }
+        .detail-header {
+            font-size: 18px;
+            font-weight: bold;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #edf2f7;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .back-to-top {
+            font-size: 11px;
+            color: #3182ce;
+            text-decoration: none;
+            font-weight: normal;
+            background: #ebf8ff;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 18px;
+            border-left: 2px solid #e2e8f0;
+            margin-left: 10px;
+        }
+        .timeline-item { position: relative; margin-bottom: 24px; }
+        .timeline-item:last-child { margin-bottom: 0; }
+        .timeline-badge {
+            position: absolute;
+            left: -25px;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #cbd5e0;
+            border: 2px solid #ffffff;
+        }
+        .timeline-item-active .timeline-badge {
+            background-color: #3182ce;
+            box-shadow: 0 0 0 2px #ebf8ff;
+        }
+        .timeline-time { font-size: 12px; font-weight: bold; color: #718096; margin-bottom: 2px; }
+        .timeline-title { font-size: 15px; font-weight: bold; color: #1a202c; }
+        .timeline-desc { font-size: 13.5px; color: #4a5568; margin-top: 4px; line-height: 1.6; }
+
+        /* 📍 地標與導航按鈕樣式 */
+        .location-info {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background-color: #f7fafc;
+            border-radius: 8px;
+            border: 1px solid #edf2f7;
+            font-size: 12.5px;
+            color: #4a5568;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .location-address {
+            font-family: monospace;
+            color: #718096;
+            word-break: break-all;
+        }
+        .nav-btn {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background-color: #ebf8ff;
+            color: #2b6cb0;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .nav-btn:hover { background-color: #dee2e6; }
+
+        /* ==================== 5. 明洞特製地圖樣式表 (已全面修復手機跑版) ==================== */
+        .myeongdong-map-section {
+            max-width: 100%;
+            margin: 30px auto 10px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            scroll-margin-top: 65px;
+        }
+        .md-header {
+            background-color: #1a365d;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        .md-header h2 {
+            margin: 0 0 5px 0;
+            font-size: 20px;
+            color: #fff;
+            border: none;
+            padding: 0;
+        }
+        .md-header p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .md-intro {
+            background-color: #ebf8ff;
+            border-left: 4px solid #3182ce;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+        }
+        .md-intro p {
+            margin: 0;
+            color: #2b6cb0;
+        }
+        .md-cat-title {
+            font-size: 16px;
+            color: #1a365d;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 6px;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .md-table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            margin-bottom: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .md-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        .md-table th {
+            background-color: #f7fafc;
+            color: #4a5568;
+            font-weight: bold;
+            padding: 12px;
+            font-size: 13px;
+            border-bottom: 2px solid #edf2f7;
+        }
+        .md-table td {
+            padding: 12px;
+            border-bottom: 1px solid #edf2f7;
+            font-size: 13.5px;
+            vertical-align: middle;
+        }
+        .md-table td.num {
+            font-weight: bold;
+            color: #718096;
+        }
+        .md-table td.name {
+            font-weight: bold;
+            color: #2d3748;
+        }
+        .md-table td.time {
+            color: #e53e3e;
+        }
+       .md-btn {
+    display: inline-flex;    /* 改用 flex，確保文字置中且不會輕易變形 */
+    align-items: center;     /* 垂直置中 */
+    justify-content: center; /* 水平置中 */
+    background-color: #3182ce;
+    color: #ffffff !important;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    transition: background-color 0.2s;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(49, 130, 206, 0.2);
+
+    /* --- 核心防跑版修正 --- */
+    box-sizing: border-box;  /* 防撐大：內襯不影響總寬度 */
+    width: 100%;             /* 填滿欄位：讓按鈕自動配合表格寬度 */
+    max-width: 200px;        /* 設上限：在大螢幕時按鈕不會變得太寬 */
+    white-space: normal;     /* 換行：文字太長時自動變兩行，不撐破按鈕 */
+    word-break: break-all;   /* 斷字：防止長英文或網址破壞排版 */
+}
+        .md-btn:hover {
+            background-color: #2b6cb0;
+        }
+        .md-tips-box {
+            background-color: #fffaf0;
+            border: 1px solid #feebc8;
+            border-left: 4px solid #dd6b20;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 30px;
+        }
+        .md-tips-box h4 {
+            margin: 0 0 8px 0;
+            color: #dd6b20;
+            font-size: 14px;
+        }
+        .md-tips-box ul {
+            margin: 0;
+            padding-left: 18px;
+        }
+        .md-tips-box li {
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #7b341e;
+        }
+
+        /* ==================== 6. 手機版切換與 RWD 控制 (Media Query) ==================== */
+        @media (max-width: 768px) {
+            .desktop-table-wrapper { display: none; }
+            .mobile-tab-bar { display: block; }
+            body { padding: 16px 16px 40px 16px; }
+            .info-grid { gap: 12px; }
+            .info-card { padding: 16px; }
+            .detail-section { padding: 16px; border-radius: 14px; }
+            .detail-header { font-size: 15px; }
+        }
+
+        /* 📱 針對手機小螢幕 (<600px) 的明洞地圖排版全面大重構，絕不跑版 */
+        @media (max-width: 600px) {
+            .myeongdong-map-section {
+                padding: 12px;
+            }
+            .md-table-wrapper {
+                background: transparent;
+                box-shadow: none;
+                overflow: visible;
+            }
+            /* 把 Table 改為純區塊 Block 排版 */
+            .md-table, .md-table thead, .md-table tbody, .md-table th, .md-table td, .md-table tr {
+                display: block;
+                width: 100% !important;
+                box-sizing: border-box;
+            }
+            .md-table thead {
+                display: none; /* 隱藏傳統表頭 */
+            }
+            .md-table tr {
+                margin-bottom: 16px;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 14px;
+                background-color: #ffffff;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            }
+            .md-table td {
+                border: none;
+                padding: 6px 0;
+                text-align: left; /* 改回左對齊符合大自然閱讀習慣 */
+                position: relative;
+                font-size: 14px;
+                clear: both;
+            }
+            /* 透過屬性產生標籤提示 */
+            .md-table td[data-label]::before {
+                content: attr(data-label) ": ";
+                font-weight: bold;
+                color: #718096;
+                margin-right: 6px;
+            }
+            /* 編號外觀優化 */
+            .md-table td.num {
+                font-size: 12px;
+                color: #a0aec0;
+                border-bottom: 1px dashed #edf2f7;
+                padding-bottom: 4px;
+                margin-bottom: 4px;
+            }
+            .md-table td.num::before {
+                content: "📍 地標編號: ";
+            }
+            /* 店名特別放大 */
+            .md-table td.name {
+                font-size: 16px;
+                color: #1a202c;
+                padding: 4px 0;
+            }
+            .md-table td.name::before {
+                content: "🏢 店名: ";
+            }
+            .md-table td.time::before {
+                content: "⏰ 狀態: ";
+            }
+            /* 按鈕欄位移除贅字，改為滿版超好按大按鈕 */
+            .md-table td.action {
+                padding-top: 10px;
+            }
+            .md-table td.action::before {
+                display: none;
+            }
+            .md-btn {
+                display: block;
+                width: 100%;
+                padding: 12px;
+                font-size: 14px;
+                background-color: #3182ce;
+                color: #ffffff !important;
+                border-radius: 8px;
+            }
+        }
+    </style>
+
+</head>
+<body>
+
+<!-- 頂部錨點 -->
+<div id="top"></div>
+
+<div class="app-title">🇰🇷 首爾旅遊行前與行程總覽</div>
+
+<!-- 📱 【手機版】橫向滑動 App Tab 導覽列 -->
+<div class="mobile-tab-bar">
+    <a href="#day1" class="tab-btn" style="background-color: #ff7675; color: #ffffff;">D1 7/22(三)</a>
+    <a href="#day2" class="tab-btn" style="background-color: #ffeaa7; color: #2d3748;">D2 7/23(四)</a>
+    <a href="#day3" class="tab-btn" style="background-color: #55efc4; color: #2d3748;">D3 7/24(五)</a>
+    <a href="#day4" class="tab-btn" style="background-color: #00cec9; color: #ffffff;">D4 7/25(六)</a>
+    <a href="#day5" class="tab-btn" style="background-color: #a29bfe; color: #ffffff;">D5 7/26(日)</a>
+    <a href="#day6" class="tab-btn" style="background-color: #ff7675; color: #ffffff;">D6 7/27(一)</a>
+</div>
+
+<!-- 🗺️ 1. 資訊卡片區 -->
+<div class="info-grid">
+    <!-- 航班卡片 -->
+    <div class="info-card">
+        <div>
+            <div class="card-header">
+                <span class="card-icon">✈️</span>
+                <span class="card-title">航班詳細資訊</span>
+            </div>
+            <div class="card-body">
+                <div class="flight-row">
+                    <span class="flight-tag">去程 ➔ OZ712 (韓亞航空)</span>
+                    <div style="font-weight: 600; margin-top: 4px;">7/22 (三) 12:25 ➔ 15:55</div>
+                    <div style="font-size: 12px; color: #718096;">桃園機場 T2 ➔ 仁川機場 T2<br>AREX往首爾站時刻<strong>17:20、18:10、18:35、19:10</strong><br>(乘車時間51分鐘)
+
+		</div>
+                </div>
+                <div class="flight-row" style="border-left-color: #e53e3e;">
+                    <span class="flight-tag" style="color: #e53e3e;">回程 ➔ OZ713 (韓亞航空)</span>
+                    <div style="font-weight: 600; margin-top: 4px;">7/27 (一) 13:55 ➔ 15:30</div>
+                    <div style="font-size: 12px; color: #718096;">仁川機場 T2 ➔ 桃園機場 T2<br>AREX往機場時刻<strong>08:06、08:55、09:45、10:20</strong><br>(乘車時間51分鐘)</div>
+                </div>
+                <p style="font-size: 11.5px; color: #718096; margin: 0;">⚠️ 貼心提醒：兩邊機場皆在 <span class="highlight-text">第二航廈 (T2)</span> 機場出入境。</p>
+            </div>
+        </div>
+        <a href="https://www.airport.kr/" class="card-btn btn-asiana" target="_blank">🌐 前往首爾機場官網 ➔</a>
+    </div>
+
+    <!-- eArrival 卡片 -->
+    <div class="info-card">
+        <div>
+            <div class="card-header">
+                <span class="card-icon">📝</span>
+                <span class="card-title">e-Arrival card 電子入境卡申報</span>
+            </div>
+            <div class="card-body">
+                <p>入境韓國前3天提前完成線上申報登記，簡化入境流程<br>韓國政府已將<strong>K-ETA</strong>暫時豁免措施延長至2026年12月31日</p>
+                <ul class="step-list">
+                    <li><strong>e-Arrival card</strong>：出發前 <span class="highlight-text">3 天內</span> 申請(7/20)。</li>
+                    <li><strong>特別注意</strong>：(民宿名稱:EUN House)224-12 Seogye-dong,Yongsan District,Seoul 04300,South Korea</li>
+                </ul>
+            </div>
+        </div>
+        <a href="https://e-arrivalcard.go.kr/" class="card-btn btn-arrival" target="_blank">📱 填寫e-Arrival card系統 ➔</a><br>
+	<a href="https://creatrip.com/zh-TW/blog/14666" class="card-btn btn-arrival" target="_blank">📱 查看詳細說明 ➔</a>
+    </div>
+
+    <!-- 預辦登機卡片 -->
+    <div class="info-card">
+        <div>
+            <div class="card-header">
+                <span class="card-icon">🎒</span>
+                <span class="card-title">首爾車站預辦登機</span>
+            </div>
+            <div class="card-body">
+                <p>最後一天在首爾站即可提前託運行李並辦好登機手續，輕鬆空手去逛街：</p>
+                <ul class="step-list">
+                    <li><strong>條件</strong>：限當天仁川出境、且搭乘 <span class="highlight-text">韓亞航空</span> 等指定班機。</li>
+                    <li><strong>時間</strong>：05:20 ~ 19:00（需在起飛前 <span class="highlight-text">3.5 小時</span> 完成）。</li>
+                    <li><strong>好處</strong>：抵達機場後可走「專用快速通道」，直接過安檢。</li>
+                </ul>
+            </div>
+        </div>
+        <a href="https://youtube.com/shorts/YuAdrLjK5KE?si=_-OMLMEoSxe8FVdu" class="card-btn btn-cityairport" target="_blank">🚆 查看預辦登機指南 ➔</a>
+	<br>
+	<a href="https://damei17.com/check-in-in-seoul-station/" class="card-btn btn-cityairport" target="_blank">🚆 查看詳細說明 ➔</a>
+    </div>
+</div>
+
+<!-- 💻 【電腦版】橫向大綱表格 -->
+<div class="desktop-table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th class="day-1"><a href="#day1" class="day-link"><div class="day-title">DAY 1</div><div class="date-subtitle">7/22 (三)</div></a></th>
+                <th class="day-2"><a href="#day2" class="day-link"><div class="day-title">DAY 2</div><div class="date-subtitle">7/23 (四)</div></a></th>
+                <th class="day-3"><a href="#day3" class="day-link"><div class="day-title">DAY 3</div><div class="date-subtitle">7/24 (五)</div></a></th>
+                <th class="day-4"><a href="#day4" class="day-link"><div class="day-title">DAY 4</div><div class="date-subtitle">7/25 (六)</div></a></th>
+                <th class="day-5"><a href="#day5" class="day-link"><div class="day-title">DAY 5</div><div class="date-subtitle">7/26 (日)</div></a></th>
+                <th class="day-6"><a href="#day6" class="day-link"><div class="day-title">DAY 6</div><div class="date-subtitle">7/27 (一)</div></a></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="content-cell"><div class="spot-item"><span class="time-tag">12:25</span><div class="spot-name">🛫 桃園出發</div></div></td>
+                <td class="content-cell"><div class="spot-item"><span class="time-tag">09:30</span><div class="spot-name">🏯 景福宮北村韓屋村</div></div></td>
+                <td class="content-cell"><div class="spot-item"><span class="time-tag">10:00</span><div class="spot-name">🌳 樂天世界一日遊</div></div></td>
+                <td class="content-cell"><div class="spot-item"><span class="time-tag">11:00</span><div class="spot-name">🏯 奉恩寺<br>📚 星空圖書館</div></div></td>
+                <td class="content-cell"><div class="spot-item"><span class="time-tag">10:30</span><div class="spot-name">🍲 廣藏市場東大門周邊</div></div></td>
+                <td class="content-cell"><div class="spot-item"><span class="time-tag">08:55</span><div class="spot-name">🚆 AREX 前往機場</div></div></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- 🗺️ 2. 每日詳細行程區區 -->
+
+<!-- DAY 1 -->
+<div id="day1" class="detail-section" style="border-top: 5px solid #ff7675;">
+    <div class="detail-header">
+        <span>📅 DAY 1 — 7/22 (三) 行程</span>
+        <a href="#top" class="back-to-top">▲ 回頂部</a>
+    </div>
+    <div class="timeline">
+        <div class="timeline-item timeline-item-active">
+            <div class="timeline-badge"></div>
+            <div class="timeline-time">12:25</div>
+            <div class="timeline-title">🛫 桃園國際機場出發</div>
+            <div class="timeline-desc">搭乘韓亞航空 OZ712，提前 2.5 小時抵達辦理登機與行李託運。</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-time">15:55</div>
+            <div class="timeline-title">🛬 抵達仁川國際機場 (T2)</div>
+            <div class="timeline-desc"><strong>出關後跟隨指標前往 B1 樓層，<br>搭乘 AREX 直達車前往首爾站。</strong><br>
+	    有看到氣候同行卡就可以買了<br>沒有的話地鐵站都有再買就好
+		</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-time">17:20 / 18:10/ 18:35/ 19:15</div>
+            <div class="timeline-title">🚆 搭乘 AREX 直達車</div>
+            <div class="timeline-desc">直達首爾站（乘車時間 51 分鐘），<br>前往民宿辦理入住手續。</div>
+        </div>
+         <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-time">---------</div>
+            <div class="timeline-title">行程總覽</div>
+            <div class="timeline-desc"><img src="1-1.png" alt="總覽" style="max-width:100%;height:auto;">
+
+		
+	</div>
+
+
+
+	<div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-time">19:20</div>
+            <div class="timeline-title">🍲 明洞吃吃喝喝</div>
+            <div class="timeline-desc">
+		氣候同行卡加值購買。<br>
+		[首爾站④-426]->[明洞④-424]<br>
+		餐廳非常多選擇有<br>明洞餃子：21:00<br>香港飯店：21:00<br>明洞pizza(義大利麵)：21:30(21:00)<br>王妃家：22:00<br>烏達里家 醬蟹：23:00<br>荒繆的生肉吃到飽：23:00<br>匠人鐵板雞明洞店：23:00(22:00)<br>炸雞一條街
+	</div>
+
+
+<div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <img src="1.png" alt="明洞逛街地圖" style="max-width:100%;height:auto;">
+
+
+        </div>
+
+    </div>
+</div>
+
+<!-- DAY 2 -->
+<div id="day2" class="detail-section" style="border-top: 5px solid #ffeaa7;">
+    <div class="detail-header">
+        <span>📅 DAY 2 — 7/23 (四) 行程</span>
+        <a href="#top" class="back-to-top">▲ 回頂部</a>
+    </div>
+    <div class="timeline">
+        
+        <div class="timeline-item timeline-item-active">
+            <div class="timeline-badge"></div>
+            <div class="timeline-time">07:00</div>
+            <div class="timeline-title">🍲 早餐：倫敦貝果博物館 安國店London Bagel Museum</div>
+		<div class="location-info">
+    		<span>📍 目的地：London Bagel Museum</span>
+   		 <span class="location-address">地址:20 Bukchon-ro 4-gil, Jongno District, Seoul, 南韓</span>
+   		 <a href="https://maps.app.goo.gl/t2TAbuaQqQZzvQSR8" class="nav-btn" target="_blank">🗺️ 在地圖中打開</a>
+		</div>
+            <div class="timeline-desc">營業時間 07:00-18:00</div>
+        </div>
+	<div class="timeline-item ">
+            <div class="timeline-badge"></div>
+            <div class="timeline-time">09:00</div>
+            <div class="timeline-title">🏯 景福宮北村韓屋村逛逛</div>
+            <div class="timeline-desc">景福宮參觀預計拍照 1.5小時。
+		<div class="location-info">
+    		<span>📍 目的地：景福宮</span>
+   		 <span class="location-address">地址:161 Sajik-ro, Jongno District, Seoul, 南韓</span>
+   		 <a href="https://maps.app.goo.gl/gBcgASpJ9DYmkT5EA" class="nav-btn" target="_blank">🗺️ 在地圖中打開</a>
+		</div>
+	</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-time">10:30</div>
+            <div class="timeline-title">☕ 北村韓屋村 & 三清洞</div>
+            <div class="timeline-desc">悠閒漫步歷史韓屋巷弄，找間特色文青咖啡廳享用下午茶。</div>
+        </div>
+    
+	    <div class="timeline-item">
+             <div class="timeline-badge"></div>
+            <img src="2-1.png" alt="景福宮內部" style="max-width:100%;height:auto;"><br> 
+	    <img src="2-2.png" alt="景福宮內部" style="max-width:100%;height:auto;"><br>
+        </div>
+      <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-time">13:30</div>
+            <div class="timeline-title">☕聖水洞</div>
+            <div class="timeline-desc">可愛玩具店玩具總動員的樣子(Lect House)<br>
+	香水<br> 
+小物店:29CM<br>
+
+衣服: 09WOMEN、W&double<br>
+
+包包:Stand oil、Martin Kim、SAMO Ondoh、Yeomimioun、Bucks&Leather<br> </div>
+        </div>
+
+<div class="timeline-item">
+             <div class="timeline-badge"></div>
+            <img src="2-3.png" alt="聖水洞逛街地圖" style="max-width:100%;height:auto;"><br> 
+        </div>
+
+
+
+</div>
+</div>
+
+<!-- DAY 3 -->
+<div id="day3" class="detail-section" style="border-top: 5px solid #55efc4;">
+    <div class="detail-header">
+        <span>📅 DAY 3 — 7/24 (五) 行程</span>
+        <a href="#top" class="back-to-top">▲ 回頂部</a>
+    </div>
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-time">07:00</div>
+            <div class="timeline-title">🌳 樂天世界一日遊</div>
+            <div class="timeline-desc">
+	[首爾站①-133]->[市廳①-132]轉乘<br>
+	[市廳②-201]->[蠶室站②-216]<br>
+	
+	「蠶室站」出站後尋找四號出口的方向，<br><strong>不用走到地面上。</strong><br>
+	「蠶室站」地下連通道沿著地下街的「Lotte World」巨大指標走，<br>
+	大約 5~8 分鐘，會看到樂天世界地下入口廣場。<br>
+	
+	平日地鐵二號線尖峰時段08:00~09:00。<br>
+        確認kkdy的QR Code是否直接進場或需至指定窗口換票。
+	<br>
+	<a href="https://mimigo.tw/lotte-world/" class="card-btn btn-cityairport" target="_blank">🚆 參考樂天世界指南 ➔</a>
+<br>
+</div>
+<div class="timeline-item">
+             <div class="timeline-badge"></div>
+            <img src="3.png" alt="樂天世界地圖" style="max-width:100%;height:auto;"><br> 
+        </div>
+
+
+
+        </div>
+    </div>
+</div>
+
+<!-- DAY 4 -->
+<div id="day4" class="detail-section" style="border-top: 5px solid #00cec9;">
+    <div class="detail-header">
+        <span>📅 DAY 4 — 7/25 (六) 行程</span>
+        <a href="#top" class="back-to-top">▲ 回頂部</a>
+    </div>
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-time">10:00</div>
+            <div class="timeline-title">🏯 奉恩寺<br>📚 星空圖書館</div>
+            <div class="timeline-desc">[首爾站①-133]->[市廳①-132]轉乘<br>
+		[市廳②-201]->[綜合運動場站②-218]轉乘<br>  
+		[綜合運動場站⑨-930]->[奉恩寺站⑨-929]<br>
+
+</div>
+
+<div class="timeline-item">
+             <div class="timeline-badge"></div>
+            <img src="4-1.png" alt="奉恩寺星空圖書館" style="max-width:100%;height:auto;"><br> 
+        </div>
+<div class="timeline-desc">回程
+		[三成站②-219]->[市廳②-201]->轉乘<br>  
+		[市廳①-132]->[首爾站①-133]
+
+</div>
+	<div class="timeline-item">
+             <div class="timeline-badge"></div>
+            <img src="4-2.png" alt="三成站附近美食" style="max-width:100%;height:auto;"><br> 
+        </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- DAY 5 -->
+<div id="day5" class="detail-section" style="border-top: 5px solid #a29bfe;">
+    <div class="detail-header">
+        <span>📅 DAY 5 — 7/26 (日) 行程</span>
+        <a href="#top" class="back-to-top">▲ 回頂部</a>
+    </div>
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-time">10:30</div>
+            <div class="timeline-title">🍲 廣藏市場東大門周邊</div>
+            <div class="timeline-desc">[首爾站①-133]->[鐘路5街站①-129] 8號出口</div>
+            <br>
+
+		<a href="https://bobbytravel.tw/gwangjang-market/" class="card-btn btn-cityairport" target="_blank">🚆 查看部落客說明 ➔</a>
+		<br>
+		<img src="5-1.png" alt="廣藏市場" style="max-width:100%;height:auto;"><br>
+ 		吃吃喝喝買買結束後至玩具街<br>
+		<img src="5-2.png" alt="玩具街" style="max-width:100%;height:auto;"><br>
+
+        </div>
+    </div>
+</div>
+
+<!-- DAY 6 -->
+<div id="day6" class="detail-section" style="border-top: 5px solid #ff7675;">
+    <div class="detail-header">
+        <span>📅 DAY 6 — 7/27 (一) 行程</span>
+        <a href="#top" class="back-to-top">▲ 回頂部</a>
+    </div>
+    <div class="timeline">
+        <div class="timeline-item timeline-item-active">
+            <div class="timeline-badge"></div>
+            <div class="timeline-time">08:55</div>
+            <div class="timeline-title">🚆 搭乘 AREX 前往機場</div>
+            <div class="timeline-desc">首爾站出發前往仁川機場 T2，預留時間辦理退稅手續。</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-badge"></div>
+            <div class="timeline-time">13:55</div>
+            <div class="timeline-title">🛫 仁川機場登機</div>
+            <div class="timeline-desc">搭乘韓亞航空 OZ713 返回台北，預計 15:30 抵達桃園。</div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 🗺️ 3. 【修復版】明洞精選美食與購物地圖指南 -->
+<div id="myeongdong-map" class="myeongdong-map-section">
+    <div class="md-header">
+ <a href="#top" class="back-to-top">▲ 回頂部</a>
+        <h2>🇰🇷 明洞精選美食與購物地圖指南</h2>
+
+        <p>優選 18 熱門地標 • 手機一鍵即時導航</p>
+    </div>
+
+    <div class="md-intro">
+        <p>💡 <b>使用說明：</b>本清單已做行動端最佳化。在手機上直接點選<b>「📍 點我導航」</b>按鈕，即可拉起手機內的 Google Maps 進行路線導航！</p>
+    </div>
+
+    <h3 class="md-cat-title">🍜 經典美食</h3>
+    <div class="md-table-wrapper">
+        <table class="md-table">
+            <thead>
+                <tr>
+                    <th style="width: 10%;">項目</th>
+                    <th style="width: 35%;">店名</th>
+                    <th style="width: 20%;">營業時間</th>
+                    <th style="width: 35%;">地圖導航</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="num" data-label="項目">1</td>
+                    <td class="name" data-label="店名">匠人鐵板雞</td>
+                    <td class="time" data-label="營業時間">21:00 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=%E5%8C%A0%E4%BA%BA%E9%90%B5%E6%9D%BF%E9%9B%9E%20%E5%8D%97%E9%9F%93%20Seoul%2C%20Jung%20District%2C%20Myeongdong%2010-gil%2C%2035-3" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">2</td>
+                    <td class="name" data-label="店名">王妃家 明洞本店</td>
+                    <td class="time" data-label="營業時間">22:00 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=%E7%8E%8B%E5%A6%83%E5%AE%B6%20%E6%98%8E%E6%B4%9E%E6%9C%AC%E5%BA%97%2026%20Myeongdong%208ga-gil%2C%20Jung%20District%2C%20Seoul%2C%20%E5%8D%97%E9%9F%93" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">3</td>
+                    <td class="name" data-label="店名">明洞餃子 本店</td>
+                    <td class="time" data-label="營業時間">21:00 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=%E6%98%8E%E6%B4%9E%E9%A4%83%E5%AD%90%20%E6%9C%AC%E5%BA%97%20129%20Toegye-ro%2C%20Jung%20District%2C%20Seoul%2C%20%E5%8D%97%E9%9F%93" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">4</td>
+                    <td class="name" data-label="店名">香港飯店0410</td>
+                    <td class="time" data-label="營業時間">21:00 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=%E9%A6%99%E6%B8%AF%E9%A3%AF%E5%BA%970410%207-4%20Myeongdong%2010-gil%2C%20Jung%20District%2C%20Seoul%2C%20%E5%8D%97%E9%9F%93" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">5</td>
+                    <td class="name" data-label="店名">江南麵屋 明洞店 (Gangnam Myeonok)</td>
+                    <td class="time" data-label="營業時間">21:00 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=%E6%B1%9F%E5%8D%97%E9%BA%B5%E5%B1%8B%20%E6%98%8E%E6%B4%9E%E5%BA%97%20Gangnam%20Myeonok%20%E5%8D%97%E9%9F%93%20Seoul%2C%20Jung%20District%2C%20Myeongdong%207-gil%2C%208%20%EB%AF%B8%EB%9E%98%EB%B9%8C%EB%94%A9%205%EC%B8%B5" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">6</td>
+                    <td class="name" data-label="店名">荒謬的生肉 明洞店</td>
+                    <td class="time" data-label="營業時間">23:00 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=%E8%8D%92%E8%AC%AC%E7%9A%84%E7%94%9F%E8%82%89%20%E6%98%8E%E6%B4%9E%E5%BA%97%20%E5%8D%97%E9%9F%93%20Seoul%2C%20Jung%20District%2C%204%EA%B8%B8%2023%202%EC%B8%B5" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">7</td>
+                    <td class="name" data-label="店名">烏達里家 醬蟹</td>
+                    <td class="time" data-label="營業時間">23:00 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=%E7%83%8F%E9%81%94%E9%87%8C%E5%AE%B6%20%E9%86%AC%E8%9F%B9%202F%2C%2028%20Myeongdong%208na-gil%2C%20Jung%20District%2C%20Seoul%2C%20%E5%8D%97%E9%9F%93" target="_blank">📍 點我導航</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="md-cat-title">💄 美妝購物首選：OLIVE YOUNG 戰區</h3>
+    <div class=" desktop-table-wrapper"> /*md-table-wrapper*/
+        <table class="md-table">
+            <thead>
+                <tr>
+                    <th style="width: 10%;">項目</th>
+                    <th style="width: 35%;">分店名稱</th>
+                    <th style="width: 20%;">營業時間</th>
+                    <th style="width: 35%;">地圖導航</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="num" data-label="項目">8</td>
+                    <td class="name" data-label="分店名稱">Olive Young Myeongdong Town</td>
+                    <td class="time" data-label="營業時間">22:30 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=Olive%20Young%20Myeongdong%20Town%2053%20Myeongdong-gil%2C%20Jung%20District%2C%20Seoul%2C%20%E5%8D%97%E9%9F%93" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">9</td>
+                    <td class="name" data-label="分店名稱">Olive Young Myeongdong Branch</td>
+                    <td class="time" data-label="營業時間">22:30 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=Olive%20Young%20Myeongdong%20Branch%20%E5%8D%97%E9%9F%93%20Seoul%2C%20Jung%20District%2C%20Myeongdong%208-gil%2C%2014%201F-2F" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">10</td>
+                    <td class="name" data-label="分店名稱">Olive Young (南大門路店)</td>
+                    <td class="time" data-label="營業時間">22:30 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=Olive%20Young%2068-1%20Namdaemun-ro%2C%20Jung%20District%2C%20Seoul%2C%20%E5%8D%97%E9%9F%93" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">11</td>
+                    <td class="name" data-label="分店名稱">Olive Young Town (旗艦店)</td>
+                    <td class="time" data-label="營業時間">22:30 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=Olive%20Young%20Town%20%28%E6%97%97%E8%89%A6%E5%BA%97%29%2031-9%20Myeong-dong%202%28i%29-ga%2C%20Jung%20District%2C%20Seoul%2C%20%E5%8D%97%E9%9F%93" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">12</td>
+                    <td class="name" data-label="分店名稱">OLIVE YOUNG Central Myeongdong Town Branch</td>
+                    <td class="time" data-label="營業時間">22:30 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=OLIVE%20YOUNG%20Central%20Myeongdong%20Town%20Branch%2027%20Myeongdong%208-gil%2C%20Jung%20District%2C%20Seoul%2C%20%E5%8D%97%E9%9F%93" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">13</td>
+                    <td class="name" data-label="分店名稱">OLIVE YOUNG 明洞中央店</td>
+                    <td class="time" data-label="營業時間">22:30 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=OLIVE%20YOUNG%20%E6%98%8E%E6%B4%9E%E4%B8%AD%E5%A4%AE%E5%BA%97%2018%20Myeongdong%208na-gil%2C%20Jung%20District%2C%20Seoul%2C%20%E5%8D%97%E9%9F%93" target="_blank">📍 點我導航</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3 class="md-cat-title">🛍️ 流行服飾與生活雜貨</h3>
+    <div class="md-table-wrapper">
+        <table class="md-table">
+            <thead>
+                <tr>
+                    <th style="width: 10%;">項目</th>
+                    <th style="width: 35%;">品牌與店名</th>
+                    <th style="width: 20%;">營業時間</th>
+                    <th style="width: 35%;">地圖導航</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="num" data-label="項目">14</td>
+                    <td class="name" data-label="品牌與店名">SPAO 明洞店</td>
+                    <td class="time" data-label="營業時間">22:00 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=SPAO%2015%20Myeongdong%208na-gil%2C%20Jung%20District%2C%20Seoul%2C%20%E5%8D%97%E9%9F%93" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">15</td>
+                    <td class="name" data-label="品牌與店名">TOPTEN10</td>
+                    <td class="time" data-label="營業時間">22:00 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=TOPTEN10%20%E5%8D%97%E9%9F%93%20Seoul%2C%20Jung%20District%2C%20Myeong-dong%201%28il%29-ga%2C%2061-2%20-ga%2C" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">16</td>
+                    <td class="name" data-label="品牌與店名">Daiso Myeongdong Main (大創)</td>
+                    <td class="time" data-label="營業時間">22:00 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=Daiso%20Myeongdong%20Main%2043%20Myeongdong-gil%2C%20Jung%20District%2C%20Seoul%2C%20%E5%8D%97%E9%9F%93" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">17</td>
+                    <td class="name" data-label="品牌與店名">ABC-Mart Myeongdong 3-ga</td>
+                    <td class="time" data-label="營業時間">22:00 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=ABC-Mart%20Myeongdong%203-ga%20Branch%2041%20Myeongdong%2010-gil%2C%20Chungmuro%202%28i%29-ga%2C%20Jung%20District%2C%20Seoul%2C%20%E5%8D%97%E9%9F%93" target="_blank">📍 點我導航</a></td>
+                </tr>
+                <tr>
+                    <td class="num" data-label="項目">18</td>
+                    <td class="name" data-label="品牌與店名">ABC Mart Grand Stage</td>
+                    <td class="time" data-label="營業時間">22:30 休息</td>
+                    <td class="action"><a class="md-btn" href="https://www.google.com/maps/search/?api=1&query=ABC%20Mart%20Grand%20Stage%2012%20Myeongdong%208-gil%2C%20Jung%20District%2C%20Seoul%2C%20%E5%8D%97%E9%9F%93" target="_blank">📍 點我導航</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="md-tips-box">
+        <h4>💡 實用旅遊小建議</h4>
+        <ul>
+            <li><b>即時退稅：</b>在 Olive Young、SPAO 及 ABC-Mart 結帳時，主動出示護照，只要達到退稅門檻即可現場直接折抵。</li>
+            <li><b>時間排程：</b>大部分美食餐廳於 21:00 左右休息，建議將美妝（Olive Young 營業至 22:30）或大創等服飾購物行程安排在晚餐過後！</li>
+        </ul>
+    </div>
+</div>
+
+
+
+</body>
+</html>
